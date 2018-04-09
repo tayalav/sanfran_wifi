@@ -121,7 +121,8 @@
     });
 
     const onClick = () => {
-      map.setFilter('dots', ['>=', 'hour', 134]);
+      map.setFilter('dots', ['==', 'hour', -1]);
+      map.setLayoutProperty('dots_all', 'visibility', 'visible');
     };
 
     var hours = [
@@ -177,14 +178,61 @@
         "source-layer": "san-francisco_california_2017-bx5cmq",
         "filter": ['==', 'hour', 134],
         "paint": {
-          "circle-blur": 1,
+          "circle-blur": 1.2,
           "circle-opacity": 0.9,
           "circle-radius": {
             "base": 1,
             "stops": [
+              [9, 1],
               [10, 1.5],
-              [12, 5],
+              [12, 4],
               [15, 12],
+              [22, 30]
+            ]
+          },
+          'circle-color': {
+            "base": 1,
+            "type": "categorical",
+            "property": "cat_name",
+            "stops": [
+              ["App, other", "#FF9E7F"],
+              ["Dating / Social Networking / Messenging App", "#FF9E7F"],
+              ["Gaming device", "#FF9E7F"],
+              ["Device tracking/security software", "#FFFF00"],
+              ["Navigation application", "#FFFF00"],
+              ["other", "#0AFF70"],
+            ],
+            "default": "#0AFF70",
+          }
+        }
+      });
+
+      map.addLayer({
+        "id": "dots_all",
+        "type": "circle",
+        "source": 'wificatchers',
+        "source-layer": "san-francisco_california_2017-bx5cmq",
+        "filter": ['>=', 'hour', 134],
+        "layout": {
+          "visibility": 'none'
+        },
+        "paint": {
+          "circle-opacity": 0.9,
+          "circle-blur": {
+            "base": 1,
+            "stops": [
+              [10, 2],
+              [12, 1.5],
+              [15, 1.2]
+            ]
+          },
+          "circle-radius": {
+            "base": 1,
+            "stops": [
+              [9, 0.8],
+              [10, 1],
+              [12, 2],
+              [15, 6],
               [22, 30]
             ]
           },
@@ -229,6 +277,7 @@
     document.getElementById('slider').addEventListener('input', function(e) {
       var hour = parseInt(e.target.value, 10);
       filterBy(hour);
+      map.setLayoutProperty('dots_all', 'visibility', 'none');
     });
   </script>
 
